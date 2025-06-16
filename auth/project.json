@@ -6,10 +6,13 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+  "executor": "@nx/js:tsc",
       "options": {
-        "command": "webpack-cli build",
-        "args": ["node-env=production"]
+        "outputPath": "dist/auth",
+        "main": "auth/src/main.ts",
+        "tsConfig": "auth/tsconfig.app.json", 
+        "assets": [],
+        "externalDependencies": "all"
       },
       "configurations": {
         "development": {
@@ -36,7 +39,10 @@
       }
     },
     "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/auth"],
       "options": {
+        "jestConfig": "auth/jest.config.ts",
         "passWithNoTests": true
       }
     }

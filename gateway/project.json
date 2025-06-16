@@ -6,10 +6,13 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+  "executor": "@nx/js:tsc",
       "options": {
-        "command": "webpack-cli build",
-        "args": ["node-env=production"]
+        "outputPath": "dist/gateway",
+        "main": "gateway/src/main.ts",
+        "tsConfig": "gateway/tsconfig.app.json", 
+        "assets": [],
+        "externalDependencies": "all"
       },
       "configurations": {
         "development": {
@@ -35,8 +38,11 @@
         }
       }
     },
-    "test": {
+  "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/gateway"],
       "options": {
+        "jestConfig": "gateway/jest.config.ts",
         "passWithNoTests": true
       }
     }
