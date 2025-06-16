@@ -14,16 +14,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node + PNPM
         uses: actions/setup-node@v4
         with:
-          node-version: 21
-          cache: 'pnpm'
+          node-version: 20            # LTS é mais estável que 21
+          cache: 'pnpm'               # já ativa o cache e o corepack
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-        with:
-          version: 10
+      - run: corepack enable          # garante que pnpm esteja ativado
+      - run: pnpm --version           # sanity‑check
 
       - name: Install dependencies
         run: pnpm install
