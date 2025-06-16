@@ -1,0 +1,54 @@
+name: CI with Docker Compose
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run docker-compose (Postgres + Kafka)
+        run: docker-compose up -d
+
+      - name: Wait for Kafka and Postgres to be ready
+        run: |
+          echo "Esperando Kafka e Postgres..."
+          sleep 20
+          docker ps
+
+      - name: Prisma generate
+        run: pnpm --filter=auth exec prisma generate --schema=prisma/schema.prisma
+
+      - name: Prisma migrate deploy
+        run: pnpm --filter=auth exec prisma migrate deploy --schema=prisma/schema.prisma
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/micromes_test
+
+      - name: Run Unit Tests
+        run: pnpm exec nx run-many --target=test --all
+
+      - name: Run E2E Tests
+        run: pnpm exec nx run-many --target=e2e --all
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/micromes_test
