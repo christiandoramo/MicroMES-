@@ -19,14 +19,14 @@ jobs:
         with:
           node-version: 20            # sem cache aqui
 
-      - name: Install Nx CLI globally
-        run: pnpm add -g nx
-
       - name: Setup PNPM
         uses: pnpm/action-setup@v3
         with:
           version: 10                 # use a que quiser
           run_install: false          # só instala binário
+
+      - name: Install Nx CLI globally
+        run: pnpm add -g nx
 
       - name: Cache pnpm store        # cache manual
         uses: actions/cache@v3
