@@ -14,18 +14,23 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node + PNPM
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20            # LTS é mais estável que 21
-          cache: 'pnpm'               # já ativa o cache e o corepack
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: 20            # sem cache aqui
 
-      - run: corepack enable          # garante que pnpm esteja ativado
-      - run: pnpm --version           # sanity‑check
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10                 # use a que quiser
+          run_install: false          # só instala binário
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Cache pnpm store        # cache manual
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Run docker-compose (Postgres + Kafka)
         run: docker-compose up -d
