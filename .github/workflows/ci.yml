@@ -25,15 +25,19 @@ jobs:
           version: 10                 # use a que quiser
           run_install: false          # só instala binário
 
+
+      # - name: Cache pnpm store        # cache manual
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.pnpm-store
+      #     key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #     restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies (with hoist fix)
+        run: pnpm install --shamefully-hoist
+
       - name: Install Nx CLI globally
         run: pnpm add -g nx
-
-      - name: Cache pnpm store        # cache manual
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Run docker-compose (Postgres + Kafka)
         run: docker compose up -d
