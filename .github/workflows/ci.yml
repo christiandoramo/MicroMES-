@@ -33,7 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-pnpm-
 
       - name: Run docker-compose (Postgres + Kafka)
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for Kafka and Postgres to be ready
         run: |
