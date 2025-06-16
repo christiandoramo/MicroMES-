@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 20            # sem cache aqui
 
+      - name: Install Nx CLI globally
+        run: pnpm add -g nx
+
       - name: Setup PNPM
         uses: pnpm/action-setup@v3
         with:
@@ -52,12 +55,12 @@ jobs:
       # Unit Tests (granular)
       - name: Unit tests # deixar aberto para desenvolver com TDD
         run: |
-          pnpm exec nx run auth:test
-          pnpm exec nx run gateway:test
+          nx run auth:test
+          nx run gateway:test
 
       # - name: E2E tests # deixar para quando tiver algum teste real para fazer
       #   run: |
-      #     pnpm nx runviu exexec auth-e2e:e2e
+      #     pnpm exec nx run auth-e2e:e2e
       #     pnpm exec nx run gateway-e2e:e2e
       #   env:
       #     DATABASE_URL: postgres://postgres:postgres@localhost:5432/micromes_test
